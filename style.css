@@ -33,3 +33,18 @@
   height: 20px;
   width: 20px;
 }
+
+.storage {
+  margin-left: -80px;
+  margin-top: 150px;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  flex-wrap: wrap;
+  background-color: yellow;
+}
+
+.storage div {
+  height: 20px;
+  width: 20px;
+}

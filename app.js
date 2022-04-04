@@ -77,10 +77,12 @@ document.addEventListener('DOMContentLoaded', () => {
       rotate()
     }  else if(e.keyCode === 39) {  // Right Arrow
       moveRight()
-    } else if (e.keyCode === 40) {  //Left Arrow
+    } else if (e.keyCode === 40) {  //Down Arrow
       moveDown()
-    }
-
+    } else if (e.keyCode === 66) {  //Spacebar
+      StoreTetromino()
+    } 
+    
   }
   document.addEventListener('keyup', control)
 
@@ -171,6 +173,66 @@ document.addEventListener('DOMContentLoaded', () => {
     upNextTetrominoes[nextRandom].forEach(index => {
       displaySquares[displayIndex + index].classList.add('tetromino')
     })
+  }
+
+  //show the stored tetromino in the storage
+  const displayStorage = document.querySelectorAll('.storage div')
+  let isStorageFull = false
+  let storedTetromino = 0 //l->0, z->1, t->2, o->3, i->4
+
+  /**
+   * if there IS NOT a shape stored
+   *    store currently falling shape
+   *    set 'isStorageFull' to true
+   *    remove the shapes displayed in the main grid
+   *    display the corresponding stored shape from upNextTetromino to main grid
+   *    set the upNextTetromino in mini-grid and display mini-grid shape to main grid
+   * ELSE
+   *    Remove the currently falling shape in main grid
+   *    Remove the previously stored shape in '.storage div'
+   *    Display the currently falling shape in '.storage div'
+   *    Display the shape that was stored in the spot where it was falling
+   *    Store the shape currently falling
+   *    don't touch the tetromino in mini-grid
+   */
+  function StoreTetromino() {
+    if (!isStorageFull) {
+      //random only changes when the current shape touches bottom or another shape,
+      //so random contains the currently falling shape
+      storedTetromino = random
+      isStorageFull = true
+      upNextTetrominoes[random].forEach(index => {
+      displayStorage[displayIndex + index].classList.add('tetromino')
+      })
+      squares.forEach(square => {
+      square.classList.remove('tetromino')
+      })
+      // below this is just displaying the next up coming shape that is in the mini-grid
+      random = nextRandom
+      current = theTetrominoes[random][currentRotation]
+      draw()
+      nextRandom = Math.floor(Math.random()*theTetrominoes.length)
+      displayShape()
+      //above this is displaying the next up coming shape that is in the mini-grid
+    } else {
+      //removing the currently falling shape in main grid
+      squares.forEach(square => {
+        if (!square.classList.contains('taken')) {
+          square.classList.remove('tetromino')
+        }
+      })
+      //removing the stored shape in .storage div
+      displayStorage.forEach(square => {
+        square.classList.remove('tetromino')
+      })
+      //displaying the currently falling shape in .storage div
+      upNextTetrominoes[random].forEach(index => {
+        displayStorage[displayIndex + index].classList.add('tetromino')
+      })
+      current = theTetrominoes[storedTetromino][0]
+      draw()
+      storedTetromino = random
+    }
   }
 
   //add functionality to the button
